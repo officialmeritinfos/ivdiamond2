@@ -241,7 +241,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-xl-12">
+                    <div class="about-one__right text-center">
+                        <a href="" target="_blank">
+                            <img src="{{ asset('certificate.jpeg') }}" style="max-width:400px;"/>
+                        </a>
+                    </div>
+                </div>
             </div>
+
         </div>
     </section>
     <!--About Three End-->
