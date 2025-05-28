@@ -73,7 +73,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Utilities</h6>
                     <a class="collapse-item" href="{{url('admin/investments')}}">Investments</a>
-{{--                    <a class="collapse-item" href="{{url('admin/deposits')}}">Deposits</a>--}}
+                    <a class="collapse-item" href="{{url('admin/deposits')}}">Deposits</a>
                     <a class="collapse-item" href="{{url('admin/packages')}}">Investment Package</a>
                     <a class="collapse-item" href="{{url('admin/investors')}}">Investors</a>
                     <a class="collapse-item" href="{{url('admin/withdrawals')}}">Withdrawals</a>

@@ -48,6 +48,9 @@ Route::get('withdrawals',[Withdrawals::class,'landingPage'])->name('withdrawal.i
 Route::get('new_withdrawals',[Withdrawals::class,'newWithdrawal'])->name('new_withdrawal');
 Route::post('process_withdrawal',[Withdrawals::class,'processWithdrawal'])->name('withdraw.new');
 Route::get('withdrawals/{id}/cancel',[Withdrawals::class,'cancel'])->name('withdraw.cancel');
+
+
+Route::post('withdrawals/account/add',[Withdrawals::class,'addWithdrawalAccount'])->name('withdrawal.account.add');
 /*================ SETTINGS ROUTE ====================*/
 Route::get('settings',[Settings::class,'landingPage'])->name('setting.index');
 Route::post('update-settings',[Settings::class,'processSetting'])->name('settings.update');

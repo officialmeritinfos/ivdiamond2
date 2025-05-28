@@ -141,6 +141,21 @@ Route::get('investors/{id}/activate-withdrawal',[Investors::class,'activateWithd
     ->name('investor.activate.withdrawal');
 Route::get('investors/{id}/deactivate-withdrawal',[Investors::class,'deactivateWithdrawal'])
     ->name('investor.deactivate.withdrawal');
+
+
+Route::get('investors/{id}/manage-profit-withdrawal/{status?}',[Investors::class,'manageProfitWithdrawal'])
+    ->name('investor.manage.profit.withdrawal');
+Route::get('investors/{id}/manage-capital-withdrawal/{status?}',[Investors::class,'manageCapitalWithdrawal'])
+    ->name('investor.manage.capital.withdrawal');
+
+Route::get('investors/{id}/manage-capital-investment/{status?}',[Investors::class,'manageCapitalInvestment'])
+    ->name('investor.manage.capital.investment');
+
+Route::get('investors/{id}/manage-capital-transfer/{status?}',[Investors::class,'manageCapitalTransfer'])
+    ->name('investor.manage.capital.transfer');
+Route::get('investors/{id}/manage-profit-transfer/{status?}',[Investors::class,'manageProfitTransfer'])
+    ->name('investor.manage.profit.transfer');
+
 /*=============== PROMO ROUTE ==============================*/
 Route::get('promos',[PromoController::class,'landingPage'])->name('promo.index');
 Route::get('promo/{id}/edit',[PromoController::class,'edit'])->name('promo.edit');

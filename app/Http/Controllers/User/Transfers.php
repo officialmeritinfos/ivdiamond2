@@ -35,65 +35,142 @@ class Transfers extends Controller
         return view('user.transfers',$dataView);
     }
 
-    public function newTransfer(Request  $request)
+    public function newTransfer(Request $request)
     {
-        $web = GeneralSetting::where('id',1)->first();
         $user = Auth::user();
-        $validator = Validator::make($request->input(),[
-            'amount'=>['required','numeric'],
-            'username'=>['required','string','exists:users,username'],
-            'password'=>['required','current_password:web']
-        ]);
+        $web = GeneralSetting::first();
 
-        if ($validator->fails()){
-            return back()->with('errors',$validator->errors());
+        // Validate shared fields
+        $rules = [
+            'type' => ['required', 'in:user,capital_to_profit,profit_to_capital'],
+            'amount' => ['required', 'numeric', 'min:1'],
+            'password' => ['required', 'current_password:web'],
+        ];
+
+        // Add username rule only if transferring to another user
+        if ($request->type === 'user') {
+            $rules['username'] = ['required', 'string', 'exists:users,username'];
         }
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return back()->with('errors', $validator->errors());
+        }
+
         $input = $validator->validated();
+        $amount = $input['amount'];
+        $type = $input['type'];
 
-        $receiver = User::where('username',$input['username'])->first();
-
-        if ($input['amount'] >$user->balance){
-            return back()->with('error','insufficient balance');
-        }
-
-        if ($user->username ==$input['username']){
-            return back()->with('error','You cannot make transfer to yourself');
-        }
-
-        $receiver->balance=$receiver->balance+$input['amount'];
-        $user->balance=$user->balance-$input['amount'];
-
-        $transfer = Transfer::create([
-            'sender'=>$user->id,
-            'recipient'=>$receiver->id,
-            'recipientHolder'=>$input['username'],
-            'reference'=>$this->generateId('transfers','reference',15),
-            'status'=>1,'amount'=>$input['amount']
-        ]);
-        if (!empty($transfer)){
-            $user->save();
-            $receiver->save();
-            $usermessage = "Your account has been debited of $".$input['amount']." for a transfer with reference ".$transfer->reference."
-                and credited to ".$input['username'].".
-            ";
-
-            $receivermessage = "Your account has been credited with $".$input['amount']." from ".$user->username."
-            ";
-
-            $user->notify(new InvestmentMail($user,$usermessage,'New Account Transfer'));
-            $receiver->notify(new InvestmentMail($receiver,$receivermessage,'New Account Credit'));
-            $admin = User::where('is_admin',1)->first();
-            if (!empty($admin)){
-                $adminMessage = "
-                    A new transfer
-                    has been made by the investor <b>".$user->name."</b> with reference <b>".$transfer->reference."</b> to the investor
-                    ".$receiver->name." of the sum of $".$input['amount']."
-                ";
-                //SendInvestmentNotification::dispatch($admin,$adminMessage,'New Investment Initiation');
-                $admin->notify(new InvestmentMail($admin,$adminMessage,'New  Account Transfer'));
+        // Handle transfer types
+        if ($type === 'user') {
+            // Permission check
+            if (! $user->canLoan) {
+                return back()->with('error', 'You are not permitted to transfer to another user.');
             }
-            return back()->with('success','Transfer successful');
+
+            // Can't transfer to self
+            if ($user->username === $input['username']) {
+                return back()->with('error', 'You cannot transfer to yourself.');
+            }
+
+            $receiver = User::where('username', $input['username'])->first();
+
+            if ($amount > $user->balance) {
+                return back()->with('error', 'Insufficient capital balance.');
+            }
+
+            // Perform transfer
+            $user->balance -= $amount;
+            $receiver->balance += $amount;
+
+            $transfer = Transfer::create([
+                'sender' => $user->id,
+                'recipient' => $receiver->id,
+                'recipientHolder' => $receiver->username,
+                'reference' => $this->generateId('transfers', 'reference', 15),
+                'status' => 1,
+                'amount' => $amount,
+            ]);
+
+            if ($transfer) {
+                $user->save();
+                $receiver->save();
+
+                // Notify both parties
+                $user->notify(new InvestmentMail($user, "You transferred $$amount to {$receiver->username}. Ref: {$transfer->reference}", 'Transfer Sent'));
+                $receiver->notify(new InvestmentMail($receiver, "You received $$amount from {$user->username}.", 'Transfer Received'));
+
+                $admin = User::where('is_admin', 1)->first();
+                if ($admin) {
+                    $admin->notify(new InvestmentMail($admin, "User <b>{$user->name}</b> transferred $<b>{$amount}</b> to <b>{$receiver->name}</b>. Ref: <b>{$transfer->reference}</b>", 'New User Transfer'));
+                }
+
+                return back()->with('success', 'Transfer completed successfully.');
+            }
+
+            return back()->with('error', 'Unable to complete transfer.');
         }
-        return back()->with('error','Something went wrong');
+
+        // Internal Transfer: Capital ↔ Profit
+        if ($type === 'capital_to_profit') {
+            if (! $user->canTransferCapital) {
+                return back()->with('error', 'You are not allowed to transfer from capital to profit.');
+            }
+
+            if ($amount > $user->balance) {
+                return back()->with('error', 'Insufficient capital balance.');
+            }
+
+            $user->balance -= $amount;
+            $user->profit += $amount;
+
+            $transfer = Transfer::create([
+                'sender' => $user->id,
+                'recipientHolder' => 'capital_to_profit',
+                'reference' => $this->generateId('transfers', 'reference', 15),
+                'status' => 1,
+                'amount' => $amount,
+            ]);
+
+            if ($transfer) {
+                $user->save();
+                $user->notify(new InvestmentMail($user, "You moved $$amount from Capital to Profit. Ref: {$transfer->reference}", 'Internal Transfer'));
+                return back()->with('success', 'Capital successfully transferred to profit.');
+            }
+
+            return back()->with('error', 'Transfer failed.');
+        }
+
+        if ($type === 'profit_to_capital') {
+            if (! $user->canTransferProfit) {
+                return back()->with('error', 'You are not allowed to transfer from profit to capital.');
+            }
+
+            if ($amount > $user->profit) {
+                return back()->with('error', 'Insufficient profit balance.');
+            }
+
+            $user->profit -= $amount;
+            $user->balance += $amount;
+
+            $transfer = Transfer::create([
+                'sender' => $user->id,
+                'recipientHolder' => 'profit_to_capital',
+                'reference' => $this->generateId('transfers', 'reference', 15),
+                'status' => 1,
+                'amount' => $amount,
+            ]);
+
+            if ($transfer) {
+                $user->save();
+                $user->notify(new InvestmentMail($user, "You moved $$amount from Profit to Capital. Ref: {$transfer->reference}", 'Internal Transfer'));
+                return back()->with('success', 'Profit successfully transferred to capital.');
+            }
+
+            return back()->with('error', 'Transfer failed.');
+        }
+
+        return back()->with('error', 'Invalid transfer type selected.');
     }
+
 }

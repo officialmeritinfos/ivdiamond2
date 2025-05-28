@@ -28,12 +28,17 @@
     <div class="row g-6 mt-6">
         <div class="card">
             <div class="row justify-content-between card-body">
-                <div class="col-lg-3 col-sm-6 text-start col-6">
+                <div class="col-lg-3 col-sm-6 text-start col-4">
                     <div class="single-today-card d-flex align-items-center">
-                        <a href="{{route('new_investment')}}" class="btn btn-success rounded-pill">Deposit</a>
+                        <a href="{{route('new_deposit')}}" class="btn btn-success rounded-pill">Deposit</a>
                     </div>
                 </div>
-                <div class="col-lg-3 col-sm-6 text-end col-6">
+                <div class="col-lg-3 col-sm-6 text-center col-4">
+                    <div class="single-today-card d-flex align-items-center">
+                        <a href="{{route('new_investment')}}" class="btn btn-info rounded-pill">Invest</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 text-end col-4">
                     <div class="single-today-card d-flex align-items-center">
                         <a href="{{route('new_withdrawal')}}" class="btn btn-primary rounded-pill">Withdraw</a>
                     </div>
@@ -43,24 +48,24 @@
         </div>
         <!-- Card Border Shadow -->
 
-{{--        <div class="col-lg-3 col-sm-6">--}}
-{{--            <div class="card card-border-shadow-warning h-100">--}}
-{{--                <div class="card-body">--}}
-{{--                    <div class="d-flex align-items-center mb-2">--}}
-{{--                        <div class="avatar me-4">--}}
-{{--                          <span class="avatar-initial rounded bg-label-warning"--}}
-{{--                          ><i class="ti ti-alert-triangle ti-28px"></i--}}
-{{--                              ></span>--}}
-{{--                        </div>--}}
-{{--                        <h4 class="mb-0">${{number_format($user->balance,2)}}</h4>--}}
-{{--                    </div>--}}
-{{--                    <p class="mb-1">Account Balance</p>--}}
-{{--                    <p class="mb-0">--}}
+        <div class="col-lg-3 col-sm-6">
+            <div class="card card-border-shadow-warning h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="avatar me-4">
+                          <span class="avatar-initial rounded bg-label-warning"
+                          ><i class="ti ti-alert-triangle ti-28px"></i
+                              ></span>
+                        </div>
+                        <h4 class="mb-0">${{number_format($user->balance,2)}}</h4>
+                    </div>
+                    <p class="mb-1">Capital Balance</p>
+                    <p class="mb-0">
 
-{{--                    </p>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
+                    </p>
+                </div>
+            </div>
+        </div>
         <div class="col-lg-3 col-sm-6">
             <div class="card card-border-shadow-success h-100">
                 <div class="card-body">
@@ -72,14 +77,14 @@
                         </div>
                         <h4 class="mb-0">${{number_format($user->profit,2)}}</h4>
                     </div>
-                    <p class="mb-1">Account Balance</p>
+                    <p class="mb-1">Profit Balance</p>
                     <p class="mb-0">
 
                     </p>
                 </div>
             </div>
         </div>
-       {{-- <div class="col-lg-3 col-sm-6">
+        <div class="col-lg-3 col-sm-6">
             <div class="card card-border-shadow-primary h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-2">
@@ -96,7 +101,7 @@
                     </p>
                 </div>
             </div>
-        </div>--}}
+        </div>
         <div class="col-lg-3 col-sm-6">
             <div class="card card-border-shadow-success h-100">
                 <div class="card-body">
@@ -124,45 +129,9 @@
                           ><i class="ti ti-git-fork ti-28px"></i
                               ></span>
                         </div>
-                        <h4 class="mb-0">${{number_format($pendingDeposit,2)}}</h4>
+                        <h4 class="mb-0">${{number_format($completedInvestments,2)}}</h4>
                     </div>
-                    <p class="mb-1">Pending  Deposits</p>
-                    <p class="mb-0">
-
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-sm-6">
-            <div class="card card-border-shadow-success h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center mb-2">
-                        <div class="avatar me-4">
-                          <span class="avatar-initial rounded bg-label-success"
-                          ><i class="ti ti-git-fork ti-28px"></i
-                              ></span>
-                        </div>
-                        <h4 class="mb-0">${{number_format($user->withdrawals,2)}}</h4>
-                    </div>
-                    <p class="mb-1">Total Withdrawals</p>
-                    <p class="mb-0">
-
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-sm-6">
-            <div class="card card-border-shadow-success h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center mb-2">
-                        <div class="avatar me-4">
-                          <span class="avatar-initial rounded bg-label-success"
-                          ><i class="ti ti-git-fork ti-28px"></i
-                              ></span>
-                        </div>
-                        <h4 class="mb-0">${{number_format($pendingWithdrawal,2)}}</h4>
-                    </div>
-                    <p class="mb-1">Pending Withdrawals</p>
+                    <p class="mb-1">Completed Investments</p>
                     <p class="mb-0">
 
                     </p>
@@ -181,6 +150,25 @@
                         <h4 class="mb-0">${{number_format($withdrawals,2)}}</h4>
                     </div>
                     <p class="mb-1">Completed Withdrawals</p>
+                    <p class="mb-0">
+
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="card card-border-shadow-success h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="avatar me-4">
+                          <span class="avatar-initial rounded bg-label-success"
+                          ><i class="ti ti-git-fork ti-28px"></i
+                              ></span>
+                        </div>
+                        <h4 class="mb-0">${{number_format($user->withdrawals,2)}}</h4>
+                    </div>
+                    <p class="mb-1">Total Withdrawals</p>
                     <p class="mb-0">
 
                     </p>
@@ -252,9 +240,29 @@
                           ><i class="ti ti-git-fork ti-28px"></i
                               ></span>
                         </div>
-                        <h4 class="mb-0">${{number_format($completedInvestments,2)}}</h4>
+                        <h4 class="mb-0">${{number_format($pendingDeposit,2)}}</h4>
                     </div>
-                    <p class="mb-1">Completed Investments</p>
+                    <p class="mb-1">Pending  Deposits</p>
+                    <p class="mb-0">
+
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="card card-border-shadow-success h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="avatar me-4">
+                          <span class="avatar-initial rounded bg-label-success"
+                          ><i class="ti ti-git-fork ti-28px"></i
+                              ></span>
+                        </div>
+                        <h4 class="mb-0">${{number_format($pendingWithdrawal,2)}}</h4>
+                    </div>
+                    <p class="mb-1">Pending Withdrawals</p>
                     <p class="mb-0">
 
                     </p>

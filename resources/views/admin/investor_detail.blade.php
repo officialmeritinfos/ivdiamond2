@@ -89,8 +89,8 @@
                             <thead style="background-color:#84B0CA ;" class="text-white">
                             <tr>
                                 <th scope="col">#</th>
-{{--                                <th scope="col">Account Balance</th>--}}
                                 <th scope="col">Account Balance</th>
+                                <th scope="col">Profit Balance</th>
                                 <th scope="col">Withdrawals</th>
                                 <th scope="col">Referral Balance</th>
                                 <th scope="col">Bonus</th>
@@ -101,12 +101,17 @@
                                 <th scope="col">Reinvestment</th>
                                 <th scope="col">Transfer</th>
                                 <th scope="col">Withdrawal</th>
+                                <th scope="col">Withdrawal From Profit</th>
+                                <th scope="col">Withdrawal From Capital</th>
+                                <th scope="col">Invest From Capital</th>
+                                <th scope="col">Transfer Profit To Capital</th>
+                                <th scope="col">Transfer Capital To Profit</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
                                 <th scope="row">1</th>
-{{--                                <td>${{number_format($investor->balance,2)}}</td>--}}
+                                <td>${{number_format($investor->balance,2)}}</td>
                                 <td>${{number_format($investor->profit,2)}}</td>
                                 <td>${{number_format($investor->withdrawals,2)}}</td>
                                 <td>${{number_format($investor->refBal,2)}}</td>
@@ -153,6 +158,41 @@
                                 </td>
                                 <td>
                                     @if($investor->canWithdraw == 1)
+                                        <span class="badge badge-success">Active</span>
+                                    @else
+                                        <span class="badge badge-dark">Inactive</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($investor->canWithdrawProfit == 1)
+                                        <span class="badge badge-success">Active</span>
+                                    @else
+                                        <span class="badge badge-dark">Inactive</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($investor->canWithdrawCapital == 1)
+                                        <span class="badge badge-success">Active</span>
+                                    @else
+                                        <span class="badge badge-dark">Inactive</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($investor->canInvestCapital == 1)
+                                        <span class="badge badge-success">Active</span>
+                                    @else
+                                        <span class="badge badge-dark">Inactive</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($investor->canTransferProfit == 1)
+                                        <span class="badge badge-success">Active</span>
+                                    @else
+                                        <span class="badge badge-dark">Inactive</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($investor->canTransferCapital == 1)
                                         <span class="badge badge-success">Active</span>
                                     @else
                                         <span class="badge badge-dark">Inactive</span>
@@ -251,6 +291,47 @@
                                         <a href="{{route('admin.investor.deactivate.withdrawal',['id'=>$investor->id])}}"
                                            class="btn btn-dark mt-3">Deactivate Withdrawal</a>
                                     @endif
+
+                                    @if($investor->canWithdrawProfit !=1)
+                                        <a href="{{route('admin.investor.manage.profit.withdrawal',['id'=>$investor->id,'status'=>1])}}"
+                                           class="btn btn-success mt-3">Activate Profit Withdrawal</a>
+                                    @else
+                                        <a href="{{route('admin.investor.manage.profit.withdrawal',['id'=>$investor->id,'status'=>2])}}"
+                                           class="btn btn-dark mt-3">Deactivate Profit Withdrawal</a>
+                                    @endif
+
+                                    @if($investor->canWithdrawCapital !=1)
+                                        <a href="{{route('admin.investor.manage.capital.withdrawal',['id'=>$investor->id])}}"
+                                           class="btn btn-success mt-3">Activate Capital Withdrawal</a>
+                                    @else
+                                        <a href="{{route('admin.investor.manage.capital.withdrawal',['id'=>$investor->id,'status'=>2])}}"
+                                           class="btn btn-dark mt-3">Deactivate Capital Withdrawal</a>
+                                    @endif
+
+                                    @if($investor->canInvestCapital !=1)
+                                        <a href="{{route('admin.investor.manage.capital.investment',['id'=>$investor->id])}}"
+                                           class="btn btn-success mt-3">Activate Capital Investment</a>
+                                    @else
+                                        <a href="{{route('admin.investor.manage.capital.investment',['id'=>$investor->id,'status'=>2])}}"
+                                           class="btn btn-dark mt-3">Deactivate Capital Investment</a>
+                                    @endif
+
+                                    @if($investor->canTransferProfit !=1)
+                                        <a href="{{route('admin.investor.manage.profit.transfer',['id'=>$investor->id])}}"
+                                           class="btn btn-success mt-3">Activate Profit Transfer</a>
+                                    @else
+                                        <a href="{{route('admin.investor.manage.profit.transfer',['id'=>$investor->id,'status'=>2])}}"
+                                           class="btn btn-dark mt-3">Deactivate Profit Transfer</a>
+                                    @endif
+
+                                    @if($investor->canTransferCapital !=1)
+                                        <a href="{{route('admin.investor.manage.capital.transfer',['id'=>$investor->id])}}"
+                                           class="btn btn-success mt-3">Activate Capital Transfer</a>
+                                    @else
+                                        <a href="{{route('admin.investor.manage.capital.transfer',['id'=>$investor->id,'status'=>2])}}"
+                                           class="btn btn-dark mt-3">Deactivate Capital Transfer</a>
+                                    @endif
+
                             </div>
                         </div>
                     </div>
@@ -258,20 +339,20 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class=" text-center">
-{{--                                <button class="btn btn-info"style="margin-bottom:4px;" data-toggle="modal" data-target="#addFunds">--}}
-{{--                                    Add Balance--}}
-{{--                                </button>--}}
-{{--                                <button class="btn btn-outline-info"--}}
-{{--                                style="margin-bottom:4px;" data-toggle="modal" data-target="#subFunds">--}}
-{{--                                Remove Balance--}}
-{{--                                </button>--}}
+                                <button class="btn btn-info"style="margin-bottom:4px;" data-toggle="modal" data-target="#addFunds">
+                                    Add Capital Balance
+                                </button>
+                                <button class="btn btn-outline-info"
+                                style="margin-bottom:4px;" data-toggle="modal" data-target="#subFunds">
+                                Remove Capital Balance
+                                </button>
                                 <button class="btn btn-primary"
                                         style="margin-bottom:4px;" data-toggle="modal" data-target="#addProfit">
-                                    Add Balance
+                                    Add Profit
                                 </button>
                                 <button class="btn btn-outline-primary"
                                         style="margin-bottom:4px;" data-toggle="modal" data-target="#subProfit">
-                                    Remove Balance
+                                    Remove Profit
                                 </button>
                                 <button class="btn btn-success"
                                         style="margin-bottom:4px;" data-toggle="modal" data-target="#addRef">
@@ -290,14 +371,14 @@
                                     Remove Withdrawal
                                 </button>
 
-{{--                                <button class="btn btn-info"--}}
-{{--                                        style="margin-bottom:4px;" data-toggle="modal" data-target="#addLoan">--}}
-{{--                                    Add Bonus--}}
-{{--                                </button>--}}
-{{--                                <button class="btn btn-outline-info"--}}
-{{--                                        style="margin-bottom:4px;" data-toggle="modal" data-target="#subLoan">--}}
-{{--                                    Subtract Bonus--}}
-{{--                                </button>--}}
+                                <button class="btn btn-info"
+                                        style="margin-bottom:4px;" data-toggle="modal" data-target="#addLoan">
+                                    Add Bonus
+                                </button>
+                                <button class="btn btn-outline-info"
+                                        style="margin-bottom:4px;" data-toggle="modal" data-target="#subLoan">
+                                    Subtract Bonus
+                                </button>
                             </div>
                         </div>
                     </div>

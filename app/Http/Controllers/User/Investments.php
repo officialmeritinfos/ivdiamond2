@@ -103,9 +103,9 @@ class Investments extends Controller
                 $balance = $user->balance;
                 $source = 'balance';
                 $newBalance = [
-                    'balance'=>$balance
+                    'balance'=>$balance - $input['amount']
                 ];
-                $status=2;
+                $status=4;
                 break;
             default:
                 $balance = $user->profit;
@@ -117,7 +117,15 @@ class Investments extends Controller
                 break;
         }
 
-        if ($balance < $input['amount'] && $source=='profit'){
+        if ($user->canInvestCapital!=1 && $source=='balance'){
+            return back()->with('error','Investment from Capital Balance is not allowed, please contact support');
+        }
+
+        if ($user->canCompound!=1 && $source=='profit'){
+            return back()->with('error','Investment from Profit Balance is not allowed, please contact support');
+        }
+
+        if ($balance < $input['amount']){
             return back()->with('error','Insufficient balance in  account.');
         }
 
@@ -151,8 +159,8 @@ class Investments extends Controller
             $admin = User::where('is_admin',1)->first();
             if ($input['account']==1){
                 $userMessage = "
-                    Your investment request of $".number_format($input['amount'])." has been received. Proceed to making your payment
-                    and your returns will be added.
+                    Your investment of $".number_format($input['amount'])." was successful, and your returns will
+                    be added according to the cycle.
                 ";
 
                 //send mail to user
@@ -166,7 +174,7 @@ class Investments extends Controller
 
                 //send mail to user
                 //SendInvestmentNotification::dispatch($user,$userMessage,'Investment Initiation');
-                $user->notify(new InvestmentMail($user,$userMessage,'Successful Investment'));
+                $user->notify(new InvestmentMail($user,$userMessage,' Investment Initiation'));
             }
 
             //send mail to Admin

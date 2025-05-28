@@ -2,19 +2,28 @@
 @section('content')
     @inject('injected','App\Defaults\Custom')
 
-    <div class="today-card-area pt-24">
+    <div class="today-card-area pt-24 mb-5">
         <div class="container-fluid">
             @include('templates.notification')
-            <div class="row justify-content-center">
-                <div class="col-lg-3 col-sm-6">
-                    <div class="single-today-card d-flex align-items-center">
+
+            <div class="row justify-content-center g-4">
+                {{-- Capital Balance --}}
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="single-today-card d-flex align-items-center border shadow-sm rounded p-3 bg-white">
                         <div class="flex-grow-1">
-                            <span class="today">Account Balance</span>
-                            <h6>${{number_format($user->balance,2)}}</h6>
+                            <span class="today text-muted small">Capital Balance</span>
+                            <h6 class="mb-0 text-primary fw-bold">${{ number_format($user->balance, 2) }}</h6>
                         </div>
 
-                        <div class="flex-shrink-0 align-self-center">
-                            <img src="{{asset('dashboard/user/images/icon/discount.png')}}" alt="Images">
+                    </div>
+                </div>
+
+                {{-- Profit Balance --}}
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="single-today-card d-flex align-items-center border shadow-sm rounded p-3 bg-white">
+                        <div class="flex-grow-1">
+                            <span class="today text-muted small">Profit Balance</span>
+                            <h6 class="mb-0 text-success fw-bold">${{ number_format($user->profit, 2) }}</h6>
                         </div>
                     </div>
                 </div>
@@ -22,6 +31,7 @@
             </div>
         </div>
     </div>
+
     <div class="row">
         <div class="col-xl-8 mx-auto">
             <div class="card border-top border-0 border-4 border-primary">
@@ -32,30 +42,54 @@
                         <h5 class="mb-0 text-primary">{{$pageName}}</h5>
                     </div>
                     <hr>
-                    <form class="row g-3" method="post"  action="{{route('transfer.new')}}">
+                    <form class="row g-3" method="post" action="{{ route('transfer.new') }}" id="transferForm">
                         @csrf
-                        <div class="form-group col-md-12">
-                            <label for="inputAddress2">Recipient username</label>
-                            <input type="text" class="form-control" id="inputAddress2"
-                                   placeholder="Enter Recipient username" name="username">
+
+                        {{-- Transfer Type --}}
+                        <div class="col-md-12">
+                            <label class="form-label">Transfer Type</label>
+                            <select name="type" class="form-select" id="transferType" required>
+                                <option value="">Select Transfer Type</option>
+                                @if($user->canLoan)
+                                    <option value="user">To Another User</option>
+                                @endif
+                                @if($user->canTransferCapital)
+                                    <option value="capital_to_profit">From Capital to Profit</option>
+                                @endif
+                                @if($user->canTransferProfit)
+                                    <option value="profit_to_capital">From Profit to Capital</option>
+                                @endif
+                            </select>
                         </div>
-                        <div class="form-group col-md-12">
-                            <label for="inputAddress2">Amount ($)</label>
-                            <input type="number" class="form-control" id="inputAddress2"
-                                   placeholder="Enter Amount to Deposit" name="amount">
+
+                        {{-- Recipient Username (only for "user" transfer) --}}
+                        <div class="col-md-12 d-none" id="usernameGroup">
+                            <label for="username" class="form-label">Recipient Username</label>
+                            <input type="text" class="form-control" name="username" id="usernameInput" placeholder="Enter recipient's username">
                         </div>
-                        <div class="form-group col-md-12">
-                            <label for="inputAddress2">Account Password</label>
-                            <input type="password" class="form-control" id="inputAddress2"
-                                   placeholder="Enter Amount to Deposit" name="password">
+
+                        {{-- Amount --}}
+                        <div class="col-md-12">
+                            <label for="amount" class="form-label">Amount ($)</label>
+                            <input type="number" class="form-control" name="amount" placeholder="Enter amount to transfer" min="1" required>
                         </div>
-                        <div class="form-group col-md-12">
-                            <p>Transfer Charges: {{$web->transferCharge}}%</p>
+
+                        {{-- Password --}}
+                        <div class="col-md-12">
+                            <label for="password" class="form-label">Account Password</label>
+                            <input type="password" class="form-control" name="password" placeholder="Confirm with your password" required>
                         </div>
+
+                        {{-- Charge Note --}}
+                        <div class="form-group col-md-12">
+                            <p class="mb-0">Transfer Charges: <strong>{{ $web->transferCharge }}%</strong> (applies only to user-to-user transfers)</p>
+                        </div>
+
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary">Proceed</button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -64,29 +98,65 @@
 
     <div class="container-fluid mt-5">
         <div class="ui-kit-cards grid mb-24">
-            <h3>Basic Table</h3>
+            <h3 class="mb-3">Transfer History</h3>
 
             <div class="latest-transaction-area">
                 <div class="table-responsive h-auto" data-simplebar>
-                    <table class="table align-middle mb-0">
-                        <thead>
+                    <table class="table align-middle mb-0 table-bordered">
+                        <thead class="table-light">
                         <tr>
-                            <th scope="col">RECIPIENT USERNAME</th>
-                            <th scope="col">SENDER USERNAME</th>
-                            <th scope="col">AMOUNT</th>
-                            <th scope="col">SENT AT</th>
-                            <th scope="col">STATUS</th>
+                            <th>Type</th>
+                            <th>Sender</th>
+                            <th>Recipient</th>
+                            <th>Amount</th>
+                            <th>Reference</th>
+                            <th>Sent At</th>
+                            <th>Status</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($transfers as $account)
+                        @forelse($transfers as $transfer)
                             <tr>
-                                <td>{{$account->recipientHolder}}</td>
-                                <td>{{$injected->getInvestorUsername($account->sender)}}</td>
-                                <td>${{number_format($account->amount,2)}}</td>
-                                <td>{{$account->created_at}}</td>
+                                {{-- Transfer Type --}}
                                 <td>
-                                    @switch($account->status)
+                                    @if($transfer->recipient && $transfer->sender)
+                                        <span class="badge bg-secondary">User Transfer</span>
+                                    @elseif($transfer->recipientHolder === 'capital_to_profit')
+                                        <span class="badge bg-info text-dark">Capital → Profit</span>
+                                    @elseif($transfer->recipientHolder === 'profit_to_capital')
+                                        <span class="badge bg-warning text-dark">Profit → Capital</span>
+                                    @else
+                                        <span class="badge bg-light text-muted">Unknown</span>
+                                    @endif
+                                </td>
+
+                                {{-- Sender --}}
+                                <td>
+                                    @if($transfer->sender)
+                                        {{ $injected->getInvestorUsername($transfer->sender) }}
+                                    @else
+                                        <span class="text-muted">System</span>
+                                    @endif
+                                </td>
+
+                                {{-- Recipient --}}
+                                <td>
+                                    @if($transfer->recipientHolder && $transfer->recipient)
+                                        {{ $transfer->recipientHolder }}
+                                    @elseif($transfer->recipientHolder === 'capital_to_profit')
+                                        <span class="text-info">→ Profit</span>
+                                    @elseif($transfer->recipientHolder === 'profit_to_capital')
+                                        <span class="text-warning">→ Capital</span>
+                                    @else
+                                        <span class="text-muted">—</span>
+                                    @endif
+                                </td>
+
+                                <td>${{ number_format($transfer->amount, 2) }}</td>
+                                <td>{{ $transfer->reference }}</td>
+                                <td>{{ $transfer->created_at }}</td>
+                                <td>
+                                    @switch($transfer->status)
                                         @case(1)
                                             <span class="badge bg-success">Completed</span>
                                             @break
@@ -98,16 +168,37 @@
                                             @break
                                         @default
                                             <span class="badge bg-danger">Cancelled</span>
-                                            @break
                                     @endswitch
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">No transfers yet.</td>
+                            </tr>
+                        @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
+
+
+    @push('js')
+        <script>
+            $(document).ready(function () {
+                $('#transferType').on('change', function () {
+                    const type = $(this).val();
+                    if (type === 'user') {
+                        $('#usernameGroup').removeClass('d-none');
+                        $('#usernameInput').attr('required', true);
+                    } else {
+                        $('#usernameGroup').addClass('d-none');
+                        $('#usernameInput').removeAttr('required');
+                    }
+                });
+            });
+        </script>
+    @endpush
 
 @endsection

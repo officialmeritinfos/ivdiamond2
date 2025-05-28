@@ -489,4 +489,51 @@ class Investors extends Controller
 
         return back()->with('success','Successful');
     }
+
+    public function manageProfitWithdrawal($id, $status=1)
+    {
+        $data =[
+            'canWithdrawProfit'=>$status
+        ];
+        User::where('id',$id)->update($data);
+
+        return back()->with('success','Successful');
+    }
+
+    public function manageCapitalWithdrawal($id, $status=1)
+    {
+        $data =[
+            'canWithdrawCapital'=>$status
+        ];
+        User::where('id',$id)->update($data);
+
+        return back()->with('success','Successful');
+    }
+    public function manageCapitalInvestment($id, $status=1)
+    {
+        $data =[
+            'canInvestCapital'=>$status
+        ];
+        User::where('id',$id)->update($data);
+
+        return back()->with('success','Successful');
+    }
+    public function manageProfitTransfer($id, $status=1)
+    {
+        $data =[
+            'canTransferProfit'=>$status
+        ];
+        User::where('id',$id)->update($data);
+
+        return back()->with('success','Successful');
+    }
+    public function manageCapitalTransfer($id, $status=1)
+    {
+        $data =[
+            'canTransferCapital'=>$status
+        ];
+        User::where('id',$id)->update($data);
+
+        return back()->with('success','Successful');
+    }
 }
