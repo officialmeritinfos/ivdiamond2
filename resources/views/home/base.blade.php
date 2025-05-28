@@ -46,6 +46,8 @@
     <link href="{{ asset('home/css/elements-css/subscribe.css') }}" rel="stylesheet">
     <link href="{{ asset('home/css/responsive.css') }}" rel="stylesheet">
 
+    <link href="{{ asset('home/css/elements-css/page-title.css') }}" rel="stylesheet">
+
 </head>
 
 

@@ -37,7 +37,8 @@ class HomeController extends Controller
             'siteName'  => $web->name,
             'web'       => $web,
             'pageName'  => 'Company Overview',
-            'packages'  => Package::where('status',1)->get()
+            'packages'  => Package::where('status',1)->get(),
+            'services'  =>Service::where('status',1)->get()
         ];
 
         return view('home.about',$dataView);
