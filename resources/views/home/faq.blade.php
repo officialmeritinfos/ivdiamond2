@@ -1,22 +1,19 @@
 @extends('home.base')
 @section('content')
-    <!--Page Header Start-->
-    <section class="page-header">
-        <div class="page-header-bg" style="background-image: url({{asset('home/images/backgrounds/main-slider-2-1.jpg')}})">
-        </div>
-        <div class="page-header-bg-2" style="background-image: url({{asset('home/images/backgrounds/main-slider-2-1.jpg')}})">
-        </div>
-        <div class="container">
-            <div class="page-header__inner">
-                <h2>{{$pageName}}</h2>
-                <ul class="thm-breadcrumb list-unstyled">
-                    <li><a href="{{url('/')}}">Home</a></li>
-                    <li><a href="#">{{$pageName}}</a></li>
+    <!-- page-title -->
+    <section class="page-title centred">
+        <div class="bg-layer" style="background-image: url({{asset('home/images/background/page-title.jpg')}} );"></div>
+        <div class="auto-container">
+            <div class="content-box">
+                <h1>{{ $pageName }}</h1>
+                <ul class="bread-crumb clearfix">
+                    <li><a href="{{ url('/') }}">Home</a></li>
+                    <li>{{ $pageName }}</li>
                 </ul>
             </div>
         </div>
     </section>
-    <!--Page Header End-->
+    <!-- page-title end -->
 
 
     <!-- END SECTION TEAM -->
@@ -181,7 +178,7 @@
                             <div id="collapse-2-7" class="collapse" aria-labelledby="heading-2-7"
                                  data-parent="#accordion-2">
                                 <div class="card-body">
-                                    <p>No you cannot have more than one account only investors on the vip plan are allowed to do so</p>
+                                    <p>No you cannot have more than one account, only VIP investors are allowed to do so</p>
                                 </div>
                             </div>
                         </div>
@@ -199,7 +196,8 @@
                             <div id="collapse-2-8" class="collapse" aria-labelledby="heading-2-8"
                                  data-parent="#accordion-2">
                                 <div class="card-body">
-                                    <p>Yes we are officially and properly registered with the united kingdom company house our company registration number is 138898   and registered with the name {{$siteName}} LTD</p>
+                                    <p>Yes we are officially and properly registered with Canada.
+                                        Our company registration number is {{ env('COMPANY_LICENSE') }}   and registered with the name {{$siteName}}</p>
                                 </div>
                             </div>
                         </div>
@@ -217,7 +215,7 @@
                             <div id="collapse-2-9" class="collapse" aria-labelledby="heading-2-9"
                                  data-parent="#accordion-2">
                                 <div class="card-body">
-                                    <p>We do not allow multiple accounts except only for our investors on the VIP plan</p>
+                                    <p>No, except you are a VIP Investor</p>
                                 </div>
                             </div>
                         </div>
@@ -235,7 +233,7 @@
                             <div id="collapse-2-10" class="collapse" aria-labelledby="heading-2-10"
                                  data-parent="#accordion-2">
                                 <div class="card-body">
-                                    <p>You can make as many deposit as you want on any of our investment plans except the Starter Plan where you can only invest two times. And you can only withdraw once in the Starter plan.</p>
+                                    <p>You can make as many deposit as you want on any of our investment plans.</p>
                                 </div>
                             </div>
                         </div>

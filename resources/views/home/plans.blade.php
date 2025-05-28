@@ -1,96 +1,171 @@
 @extends('home.base')
 @section('content')
-    <!--Page Header Start-->
-    <section class="page-header">
-        <div class="page-header-bg" style="background-image: url({{asset('home/images/backgrounds/main-slider-2-1.jpg')}})">
-        </div>
-        <div class="page-header-bg-2" style="background-image: url({{asset('home/images/backgrounds/main-slider-2-1.jpg')}})">
-        </div>
-        <div class="container">
-            <div class="page-header__inner">
-                <h2>{{$pageName}}</h2>
-                <ul class="thm-breadcrumb list-unstyled">
-                    <li><a href="{{url('/')}}">Home</a></li>
-                    <li><a href="#">{{$pageName}}</a></li>
-                </ul>
-            </div>
-        </div>
-    </section>
-    <!--Page Header End-->
+    @push('css')
+        <style>
+
+            small {
+                font-size: 14px;
+                text-transform: initial;
+            }
+            .single-price {
+                text-align: center;
+                background: #262626;
+                transition: .7s;
+                margin-top: 20px;
+            }
+            .single-price h3 {
+                font-size: 30px;
+                color: #000;
+                font-weight: 600;
+                text-align: center;
+                margin: 0;
+                margin-top: -80px;
+                margin-bottom: 1rem;
+                font-family: poppins;
+                color: #fff;
+            }
+            .single-price h4 {
+                font-size: 20px;
+                font-weight: 500;
+                color: #fff;
+            }
+            .single-price h4 span.sup {
+                vertical-align: text-top;
+                font-size: 15px;
+            }
+            .deal-top {
+                position: relative;
+                background: #104547;
+                font-size: 16px;
+                text-transform: uppercase;
+                padding: 136px 24px 0;
+            }
+            .deal-top::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: -50px;
+                width: 0;
+                height: 0;
+                border-top: 50px solid #104547;
+                border-left: 175px solid transparent;
+                border-right: 183px solid transparent;
+            }
+            .deal-bottom {
+                padding: 56px 16px 0;
+            }
+            .deal-bottom ul {
+                margin: 0;
+                padding: 0;
+            }
+            .deal-bottom  ul li {
+                font-size: 16px;
+                color: #fff;
+                font-weight: 300;
+                margin-top: 16px;
+                border-top: 1px solid #E4E4E4;
+                padding-top: 16px;
+                list-style: none;
+            }
+            .btn-area a {
+                display: inline-block;
+                font-size: 18px;
+                color: #fff;
+                background: #104547;
+                padding: 8px 64px;
+                margin-top: 32px;
+                border-radius: 4px;
+                margin-bottom: 40px;
+                text-transform: uppercase;
+                font-weight: bold;
+                text-decoration: none;
+            }
 
 
-    <!--Pricing One Start-->
-    <section class="pricing-one pricing-page">
-        <div class="container">
-            <div class="section-title text-center">
-                <span class="section-title__tagline section-title__tagline--two">Our Investment Plan</span>
+            .single-price:hover {
+                background: #104547;
+            }
+            .single-price:hover .deal-top {
+                background: #262626;
+            }
+            .single-price:hover .deal-top:after {
+                border-top: 50px solid #262626;
+            }
+            .single-price:hover .btn-area a {
+                background: #262626;
+            }
+            /* ignore the code below */
+
+
+            .link-area
+            {
+                position:fixed;
+                bottom:20px;
+                left:20px;
+                padding:15px;
+                border-radius:40px;
+                background:#104547;
+            }
+            .link-area a
+            {
+                text-decoration:none;
+                color:#fff;
+                font-size:25px;
+            }
+        </style>
+    @endpush
+
+        <!-- page-title -->
+        <section class="page-title centred">
+            <div class="bg-layer" style="background-image: url({{asset('home/images/background/page-title.jpg')}} );"></div>
+            <div class="auto-container">
+                <div class="content-box">
+                    <h1>{{ $pageName }}</h1>
+                    <ul class="bread-crumb clearfix">
+                        <li><a href="{{ url('/') }}">Home</a></li>
+                        <li>{{ $pageName }}</li>
+                    </ul>
+                </div>
             </div>
+        </section>
+        <!-- page-title end -->
+
+    <div class="pricing-area" style="margin-bottom: 5rem;margin-top: 5rem;">
+        <div class="container">
             <div class="row justify-content-center">
                 @foreach($packages as $package)
                     @inject('option','App\Defaults\Custom')
-                    <!--Pricing One Single Start-->
-                    <div class="col-xl-4 col-lg-4 wow fadeInUp" data-wow-delay="100ms">
-                        <div class="pricing-one__single">
-                            <div class="pricing-one__price-box">
-                                <div class="pricing-one__shape-1">
-                                    <img src="{{asset('home/images/shapes/pricing-one-shape-1.png')}}" alt="">
-                                </div>
-                                <h2 class="pricing-one__price">{{$package->roi}}% <span> {{$option->getReturnType($package->returnType)}}</span></h2>
+                    <div class="col-md-4 col-sm-6 col-xs-12">
+                        <div class="single-price">
+                            <div class="deal-top">
+                                <h3>{{$package->name}}</h3>
+                                <h4> {{$package->roi}}%/ <span class="sup">{{$option->getReturnType($package->returnType)}}</span> </h4>
+                                <small class="text-white">{{$package->note}}</small>
                             </div>
-                            <div class="pricing-one__content">
-                                <p class="pricing-one__pack-name">{{$package->name}}</p>
-                                <p class="pricing-one__text">Chooses to enjoy a no annoying.</p>
-                                <ul class="list-unstyled pricing-one__content-list">
+                            <div class="deal-bottom">
+                                <ul class="deal-item">
                                     <li>
-                                        <div class="icon">
-                                            <i class="icon-check-2"></i>
-                                        </div>
-                                        <div class="text">
-                                            <p>
-                                                Price: ${{number_format($package->minAmount,2)}} - @if($package->isUnlimited !=1)
-                                                    ${{number_format($package->maxAmount,2)}}
-                                                @else
-                                                    Unlimited
-                                                @endif
-                                            </p>
-                                        </div>
+                                        Price: ${{number_format($package->minAmount,2)}} - @if($package->isUnlimited !=1)
+                                            ${{number_format($package->maxAmount,2)}}
+                                        @else
+                                            Unlimited
+                                        @endif
                                     </li>
-                                    <li>
-                                        <div class="icon">
-                                            <i class="icon-check-2"></i>
-                                        </div>
-                                        <div class="text">
-                                            <p>Total Profit return: {{$package->numberOfReturns*$package->roi}}%</p>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="icon">
-                                            <i class="icon-check-2"></i>
-                                        </div>
-                                        <div class="text">
-                                            <p>Contract Duration: {{$package->Duration}}</p>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="icon">
-                                            <i class="icon-check-2"></i>
-                                        </div>
-                                        <div class="text">
-                                            <p>Referral Bonus: {{$package->referral}}%</p>
-                                        </div>
-                                    </li>
+                                    <li>Profit return: {{$package->roi}}% {{$option->getReturnType($package->returnType)}}</li>
+                                    <li>Contract Duration: {{$package->Duration}}</li>
+                                    <li>Referral Bonus: {{$package->referral}}% </li>
                                 </ul>
-                                <a href="{{route('register')}}" class="thm-btn pricing-one__btn">Get Started</a>
+                                <div class="btn-area">
+                                    <a href="{{route('register')}}">Get Started</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <!--Pricing One Single End-->
                 @endforeach
 
             </div>
         </div>
-    </section>
-    <!--Pricing One End-->
+    </div>
 
 
 @endsection

@@ -1,22 +1,19 @@
 @extends('home.base')
 @section('content')
-    <!--Page Header Start-->
-    <section class="page-header">
-        <div class="page-header-bg" style="background-image: url({{asset('home/images/backgrounds/main-slider-2-1.jpg')}})">
-        </div>
-        <div class="page-header-bg-2" style="background-image: url({{asset('home/images/backgrounds/main-slider-2-1.jpg')}})">
-        </div>
-        <div class="container">
-            <div class="page-header__inner">
-                <h2>{{$pageName}}</h2>
-                <ul class="thm-breadcrumb list-unstyled">
-                    <li><a href="{{url('/')}}">Home</a></li>
-                    <li><a href="#">{{$pageName}}</a></li>
+    <!-- page-title -->
+    <section class="page-title centred">
+        <div class="bg-layer" style="background-image: url({{asset('home/images/background/page-title.jpg')}} );"></div>
+        <div class="auto-container">
+            <div class="content-box">
+                <h1>{{ $pageName }}</h1>
+                <ul class="bread-crumb clearfix">
+                    <li><a href="{{ url('/') }}">Home</a></li>
+                    <li>{{ $pageName }}</li>
                 </ul>
             </div>
         </div>
     </section>
-    <!--Page Header End-->
+    <!-- page-title end -->
 
 
     <!--About One Start-->
@@ -38,13 +35,13 @@
 
                         <h4>2. Collection of Information</h4>
                         <p>When you create an {{$siteName}} account, we may collect information, including non-public personal information about you from non-affiliated third party service providers in order to verify your identity and for fraud prevention, including your prior addresses and names.</p>
-                        <p>We may collect information you provide to us, such as your name, email address and any other information you choose to provide. For example, we may collect such information if you request an invite to join Quantum Finance or if you enter into any contest or promotion.</p>
+                        <p>We may collect information you provide to us, such as your name, email address and any other information you choose to provide. For example, we may collect such information if you request an invite to join {{ $siteName }} or if you enter into any contest or promotion.</p>
 
                         <h4>3. Cookies</h4>
                         <p>Most web browsers are set to accept cookies by default. If you prefer, you can usually choose to set your browser to remove or reject browser cookies. Please note that if you choose to remove or reject cookies, this could affect the availability and functionality of our Services.</p>
 
                         <h4>4. Security</h4>
-                        <p>{{$siteName}} takes reasonable measures to help protect all information about you from loss, theft, misuse and unauthorized access, disclosure, alteration and destruction. Additionally, Quantum Finance implements policies designed to protect the confidentiality and security of your nonpublic personal information, including a privacy protection policy. Quantum Finance limits access to your nonpublic personal information to employees that have a business reason to know such information, and implement security practices and procedures designed to protect the confidentiality and security of such information and prohibit unlawful disclosure of such information in accordance with its policies.</p>
+                        <p>{{$siteName}} takes reasonable measures to help protect all information about you from loss, theft, misuse and unauthorized access, disclosure, alteration and destruction. Additionally, {{ $siteName }} implements policies designed to protect the confidentiality and security of your nonpublic personal information, including a privacy protection policy. {{ $siteName }} limits access to your nonpublic personal information to employees that have a business reason to know such information, and implement security practices and procedures designed to protect the confidentiality and security of such information and prohibit unlawful disclosure of such information in accordance with its policies.</p>
 
                         <p>Where you have chosen a password that allows you to access certain parts of the website, you are responsible for keeping this password confidential. We advise you not to share your password with anyone. We have also taken measures to comply with provision of security facilities for the protection of your nonpublic personal information through the set up of firewalls, limited access to specified authorized individuals, encryption and continuous capacity building for relevant personnel. We therefore have digital and physical security measures to limit and eliminate possibilities of data privacy breach incidents.</p>
 
@@ -56,7 +53,7 @@
                         <p>Your personal information will not be retained for longer than is necessary for the purposes for which it was processed.</p>
 
                         <h4>6. How long we keep your personal information</h4>
-                        <p>We will hold your personal information on Quantum Finance’s systems for as long as is necessary to fulfil the purpose for which it was collected or to comply with legal, regulatory or internal policy requirements.</p>
+                        <p>We will hold your personal information on {{ $siteName }}’s systems for as long as is necessary to fulfil the purpose for which it was collected or to comply with legal, regulatory or internal policy requirements.</p>
 
                     </div>
                 </div>

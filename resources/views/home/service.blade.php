@@ -1,27 +1,18 @@
 @extends('home.base')
-
 @section('content')
-
-    <!-- START SECTION BANNER -->
-    <section class="hero-section ptb-100 gradient-overlay"
-             style="background: url('{{asset('home/img/header-bg-5.jpg')}}')no-repeat center center / cover">
+    <!-- Start Page-title Area -->
+    <div class="page-title-area bg-black">
         <div class="container">
-
-            <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-7">
-                    <div class="page-header-content text-white text-center pt-sm-5 pt-md-5 pt-lg-0">
-                        <h1 class="text-white mb-0">{{$pageName}}</h1>
-                        <div class="custom-breadcrumb">
-                            <ol class="breadcrumb d-inline-block bg-transparent list-inline py-0">
-                                <li class="list-inline-item breadcrumb-item active">{{$siteName}}</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
+            <div class="page-title-content">
+                <h2>{{$pageName}}</h2>
+                <ul>
+                    <li><a href="{{url('/')}}">Home</a></li>
+                    <li>{{$pageName}}</li>
+                </ul>
             </div>
-
         </div>
-    </section>
+    </div>
+    <!-- End Page-title Area -->
 
     <section class="our-blog-section ptb-100 gray-light-bg">
         <div class="container">

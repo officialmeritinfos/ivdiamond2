@@ -505,6 +505,5 @@
 </script>
 <!-- end popup massage -->
 @stack('js')
-<script src="//code.tidio.co/ktjznq9w5yuo2lw01ryxfo7sjqlkmqyn.js" async></script>
 </body>
 </html>
