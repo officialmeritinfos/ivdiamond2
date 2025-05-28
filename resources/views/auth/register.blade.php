@@ -205,5 +205,57 @@
 
 <!-- Page JS -->
 <script src="{{asset('dashboard/user/js/pages-auth.js')}}"></script>
+<!-- Google language start -->
+<style>
+
+    #google_translate_element {
+        z-index: 9999999;
+        position: fixed;
+        bottom: 25px;
+        left: 15px;
+    }
+
+    .goog-te-gadget {
+        font-family: Roboto, "Open Sans", sans-serif !important;
+        text-transform: uppercase;
+    }
+    .goog-te-gadget-simple
+    {
+        padding: 0px !important;
+        line-height: 1.428571429;
+        color: white;
+        vertical-align: middle;
+        background-color: black;
+        border: 1px solid #a5a5a599;
+        border-radius: 4px;
+        float: right;
+        margin-top: -4px;
+        z-index: 999999;
+    }
+    .goog-te-banner-frame.skiptranslate
+    {
+        display: none !important;
+        color: white;
+    }
+    .goog-te-gadget-icon
+    {
+        background: none !important;
+        display: none;
+        color: white;
+    }
+    .goog-te-gadget-simple .goog-te-menu-value
+    {
+        font-size: 12px;
+        color: white;
+        font-family: 'Open Sans' , sans-serif;
+    }
+</style>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+    window.onload = function googleTranslateElementInit() {
+        new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
