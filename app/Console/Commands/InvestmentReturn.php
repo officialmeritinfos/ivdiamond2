@@ -85,9 +85,11 @@ class InvestmentReturn extends Command
                         $update = Investment::where('id',$investment->id)->update($dataInvestment);
                         if ($update){
                             if ($package->withdrawEnd!=1){
-                                $user->profit = $user->profit+$profitToAdd+$investment->amount;
+                                $user->profit = $user->profit+$profitToAdd;
+                                $user->balance = $user->balance+$investment->amount;
                             }else{
-                                $user->profit = $user->profit+$newProfit+$investment->amount;
+                                $user->profit = $user->profit+$newProfit;
+                                $user->balance = $user->balance+$investment->amount;
                             }
 
                             $user->save();
