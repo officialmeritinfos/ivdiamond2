@@ -64,7 +64,7 @@ class Transfers extends Controller
         // Handle transfer types
         if ($type === 'user') {
             // Permission check
-            if (! $user->canLoan) {
+            if ($user->canLoan !=1) {
                 return back()->with('error', 'You are not permitted to transfer to another user.');
             }
 
@@ -113,7 +113,7 @@ class Transfers extends Controller
 
         // Internal Transfer: Capital ↔ Profit
         if ($type === 'capital_to_profit') {
-            if (! $user->canTransferCapital) {
+            if ($user->canTransferCapital !=1) {
                 return back()->with('error', 'You are not allowed to transfer from capital to profit.');
             }
 
@@ -142,7 +142,7 @@ class Transfers extends Controller
         }
 
         if ($type === 'profit_to_capital') {
-            if (! $user->canTransferProfit) {
+            if ( $user->canTransferProfit !=1) {
                 return back()->with('error', 'You are not allowed to transfer from profit to capital.');
             }
 

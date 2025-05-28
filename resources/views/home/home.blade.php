@@ -89,7 +89,7 @@
                 <div class="col-lg-6 col-md-12 col-sm-12 image-column">
                     <div class="image_block_two">
                         <div class="image-box mr_30">
-                            <figure class="image"><img src="{{ asset('home/images/resource/about-3.jpg') }}" alt=""></figure>
+                            <figure class="image"><img src="{{ asset('home/images/project/project-1.jpg') }}" alt=""></figure>
                             <div class="image-content">
                                 <h2>20</h2>
                                 <h3>Years of Investment Experience</h3>
