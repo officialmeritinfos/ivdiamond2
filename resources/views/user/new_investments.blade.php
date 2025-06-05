@@ -60,9 +60,7 @@
                                 @if($user->canInvestCapital==1)
                                     <option value="1">Invest Capital Balance</option>
                                 @endif
-                                @if($user->canCompound==1)
-                                    <option value="2">Reinvest from Profit Balance</option>
-                                @endif
+
                             </select>
                         </div>
                         <div class="text-center">
