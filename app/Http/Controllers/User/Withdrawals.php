@@ -61,7 +61,7 @@ class Withdrawals extends Controller
         $validated = $request->validate([
             'amount' => ['required', 'numeric', 'min:1'],
             'asset' => ['required', 'alpha_dash'],
-            'account' => ['required'],
+            'account' => ['required','numeric'],
             'wallet' => [
                 'required',
                 Rule::exists('withdrawal_accounts', 'id')->where('user', $user->id),
@@ -74,7 +74,7 @@ class Withdrawals extends Controller
         }
 
         // Determine source account and check balance
-        switch ((int) $validated['account']) {
+        switch ($validated['account']) {
             case 1: // Profit
                 $balance = $user->profit;
                 $newBalance = ['profit' => $balance - $validated['amount']];
