@@ -74,12 +74,12 @@
                                 <option value="">Select Balance Source</option>
                                 @if($user->canWithdraw)
                                     @if($user->canWithdrawCapital)
-                                        <option value="capital">Capital Balance</option>
+                                        <option value="3">Capital Balance</option>
                                     @endif
                                     @if($user->canWithdrawProfit)
-                                        <option value="profit">Profit Balance</option>
+                                        <option value="1">Profit Balance</option>
                                     @endif
-                                    <option value="referral">Referral Balance</option>
+                                    <option value="2">Referral Balance</option>
                                 @endif
                             </select>
                         </div>
