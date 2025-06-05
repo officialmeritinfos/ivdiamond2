@@ -50,12 +50,6 @@
                             <label class="form-label">Transfer Type</label>
                             <select name="type" class="form-select" id="transferType" required>
                                 <option value="">Select Transfer Type</option>
-                                @if($user->canLoan==1)
-                                    <option value="user">To Another User</option>
-                                @endif
-                                @if($user->canTransferCapital==1)
-                                    <option value="capital_to_profit">From Capital to Profit</option>
-                                @endif
                                 @if($user->canTransferProfit==1)
                                     <option value="profit_to_capital">From Profit to Capital</option>
                                 @endif

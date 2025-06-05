@@ -263,20 +263,6 @@
                                     <a href="{{route('admin.investor.deactivate.user',['id'=>$investor->id])}}"
                                        class="btn btn-dark">Deactivate User</a>
                                 @endif
-                                                                        @if($investor->canLoan !=1)
-                                                                            <a href="{{route('admin.investor.activate.loan',['id'=>$investor->id])}}"
-                                                                               class="btn btn-success">Activate Transfer</a>
-                                                                        @else
-                                                                            <a href="{{route('admin.investor.deactivate.loan',['id'=>$investor->id])}}"
-                                                                               class="btn btn-dark">Deactivate Transfer</a>
-                                                                        @endif
-                                    @if($investor->canCompound !=1)
-                                        <a href="{{route('admin.investor.activate.reinvestment',['id'=>$investor->id])}}"
-                                           class="btn btn-success">Activate Reinvestment</a>
-                                    @else
-                                        <a href="{{route('admin.investor.deactivate.reinvestment',['id'=>$investor->id])}}"
-                                           class="btn btn-dark">Deactivate Reinvestment</a>
-                                    @endif
 
                                 <a href="{{route('admin.investor.verify.user',['id'=>$investor->id])}}"
                                    class="btn btn-success">Verify KYC</a>
@@ -324,13 +310,7 @@
                                            class="btn btn-dark mt-3">Deactivate Profit Transfer</a>
                                     @endif
 
-                                    @if($investor->canTransferCapital !=1)
-                                        <a href="{{route('admin.investor.manage.capital.transfer',['id'=>$investor->id])}}"
-                                           class="btn btn-success mt-3">Activate Capital Transfer</a>
-                                    @else
-                                        <a href="{{route('admin.investor.manage.capital.transfer',['id'=>$investor->id,'status'=>2])}}"
-                                           class="btn btn-dark mt-3">Deactivate Capital Transfer</a>
-                                    @endif
+
 
                             </div>
                         </div>
