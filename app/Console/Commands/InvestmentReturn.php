@@ -101,7 +101,7 @@ class InvestmentReturn extends Command
                         $numberOfReturn
                     ) {
                         $investment->update($dataInvestment);
-                        InvestmentReturn::create($dataReturns);
+                        \App\Models\InvestmentReturn::create($dataReturns);
 
                         if ($instantCurrentReturn === $numberOfReturn) {
                             if ($package->withdrawEnd != 1) {
