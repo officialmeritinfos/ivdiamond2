@@ -43,7 +43,8 @@ class InvestmentReturn extends Command
      */
     public function handle()
     {
-        logger('Starting the processes');
+        logger('🔁 Starting Investment Return Job');
+
         $investments = Investment::where('status', 4)
             ->where('nextReturn', '<=', now()->timestamp)
             ->get();
@@ -54,6 +55,7 @@ class InvestmentReturn extends Command
             $returnTypeModel = ReturnType::find($investment->returnType);
 
             if (! $user || ! $package || ! $returnTypeModel) {
+                Log::warning('⛔ Missing model(s) for investment ID: ' . $investment->id);
                 continue;
             }
 
@@ -82,56 +84,64 @@ class InvestmentReturn extends Command
                 if ($instantCurrentReturn === $numberOfReturn) {
                     $dataInvestment['status'] = 1;
                     $dataInvestment['nextReturn'] = now()->timestamp;
+                }
 
-                    $updated = Investment::where('id', $investment->id)->update($dataInvestment);
+                try {
+                    DB::transaction(function () use (
+                        $investment,
+                        $user,
+                        $package,
+                        $dataInvestment,
+                        $dataReturns,
+                        $profitToAdd,
+                        $newProfit,
+                        $instantCurrentReturn,
+                        $numberOfReturn
+                    ) {
+                        $investment->update($dataInvestment);
+                        InvestmentReturn::create($dataReturns);
 
-                    if ($updated) {
-                        if ($package->withdrawEnd != 1) {
-                            $user->profit += $profitToAdd;
+                        if ($instantCurrentReturn === $numberOfReturn) {
+                            if ($package->withdrawEnd != 1) {
+                                $user->profit += $profitToAdd;
+                            } else {
+                                $user->profit += $newProfit;
+                            }
+                            $user->balance += $investment->amount;
                         } else {
-                            $user->profit += $newProfit;
+                            if ($package->withdrawEnd != 1) {
+                                $user->profit += $profitToAdd;
+                            }
                         }
-                        $user->balance += $investment->amount;
+
                         $user->save();
 
-                        InvestmentReturn::create($dataReturns);
+                        $userMessage = $instantCurrentReturn === $numberOfReturn
+                            ? "Your Investment with reference Id <b>{$investment->reference}</b> has completed and the earned returns added to your profit account."
+                            : "Your Investment with reference Id <b>{$investment->reference}</b> has returned <b>\${$profitToAdd}</b> to your account.<br>
+                               You can find this in the specific investment Current Profit column.<br>
+                               <p><b>Note:</b> All returns will be credited to your profit balance at the end of the cycle.</p>";
 
-                        $userMessage = "
-                            Your Investment with reference Id <b>{$investment->reference}</b> has completed
-                            and the earned returns added to your profit account.
-                        ";
-                        $user->notify(new InvestmentMail($user, $userMessage, 'Investment Completion'));
+                        $user->notify(new InvestmentMail($user, $userMessage, $instantCurrentReturn === $numberOfReturn ? 'Investment Completion' : 'Investment Return'));
 
-                        $admin = User::where('is_admin', 1)->first();
-                        if ($admin) {
-                            $adminMessage = "
-                                An investment started by <b>{$user->name}</b> with reference
-                                <b>{$investment->reference}</b> has completed and returns credited to profit balance.
-                            ";
-                            $admin->notify(new InvestmentMail($admin, $adminMessage, 'Investment Completion'));
+                        if ($instantCurrentReturn === $numberOfReturn) {
+                            $admin = User::where('is_admin', 1)->first();
+                            if ($admin) {
+                                $adminMessage = "
+                                    An investment started by <b>{$user->name}</b> with reference
+                                    <b>{$investment->reference}</b> has completed and returns credited to profit balance.
+                                ";
+                                $admin->notify(new InvestmentMail($admin, $adminMessage, 'Investment Completion'));
+                            }
                         }
-                    }
-                } else {
-                    $updated = Investment::where('id', $investment->id)->update($dataInvestment);
-
-                    if ($updated) {
-                        InvestmentReturn::create($dataReturns);
-
-                        if ($package->withdrawEnd != 1) {
-                            $user->profit += $profitToAdd;
-                            $user->save();
-                        }
-
-                        $userMessage = "
-                            Your Investment with reference Id <b>{$investment->reference}</b> has returned
-                            <b>\${$profitToAdd}</b> to your account.<br>
-                            You can find this in the specific investment Current Profit column.<br>
-                            <p><b>Note:</b> All returns will be credited to your profit balance at the end of the cycle.</p>
-                        ";
-                        $user->notify(new InvestmentMail($user, $userMessage, 'Investment Return'));
-                    }
+                    });
+                } catch (\Throwable $e) {
+                    Log::error("❌ Transaction failed for investment ID {$investment->id}: " . $e->getMessage());
+                    continue;
                 }
             }
         }
+
+        logger('✅ Investment Return Job completed.');
     }
 }
