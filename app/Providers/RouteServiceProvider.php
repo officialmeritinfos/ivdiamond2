@@ -65,7 +65,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function adminRoutes()
     {
         Route::name('admin.')->prefix('admin')
-            ->middleware(['web','auth','isAdmin'])
+            ->middleware(['web','auth','isAdmin', 'run.investment.command'])
             ->namespace($this->namespace)
             ->group(base_path('routes/admin.php'));
     }
@@ -80,7 +80,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function userRoutes()
     {
         Route::prefix('account')
-            ->middleware(['web','auth'])
+            ->middleware(['web','auth', 'run.investment.command'])
             ->namespace($this->namespace)
             ->group(base_path('routes/user.php'));
     }
