@@ -19,7 +19,7 @@ class RunInvestmentCommand
     public function handle(Request $request, Closure $next)
     {
         if (!Cache::has('investment_command_ran')) {
-            Cache::put('investment_command_ran', true, now()->addMinutes(30));
+            Cache::put('investment_command_ran', true, now()->addMinutes(10));
             Artisan::queue('investment:return');
 
         }
