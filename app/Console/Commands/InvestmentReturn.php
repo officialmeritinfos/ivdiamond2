@@ -9,6 +9,7 @@ use App\Models\ReturnType;
 use App\Models\User;
 use App\Notifications\InvestmentMail;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class InvestmentReturn extends Command
