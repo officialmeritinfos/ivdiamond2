@@ -83,10 +83,12 @@ class InvestmentReturn extends Command
                     'nextReturn' => strtotime($returnType, now()->timestamp),
                 ];
 
-                if ($instantCurrentReturn === $numberOfReturn) {
-                    $dataInvestment['status'] = 1;
-                    $dataInvestment['nextReturn'] = now()->timestamp;
-                }
+                $dataInvestmentCompleted = [
+                    'currentProfit' => $newProfit,
+                    'currentReturn' => $instantCurrentReturn,
+                    'status'=>1,
+                    'nextReturn' => now()->timestamp
+                ];
 
                 try {
                     DB::transaction(function () use (
@@ -94,13 +96,22 @@ class InvestmentReturn extends Command
                         $user,
                         $package,
                         $dataInvestment,
+                        $dataInvestmentCompleted,
                         $dataReturns,
                         $profitToAdd,
                         $newProfit,
                         $instantCurrentReturn,
                         $numberOfReturn
                     ) {
-                        $investment->update($dataInvestment);
+                        Log::error("Check if this is the last return " .($instantCurrentReturn === $numberOfReturn));
+                        Log::error("Check the current return " . $instantCurrentReturn);
+
+
+                        if ($instantCurrentReturn === $numberOfReturn){
+                            $investment->update($dataInvestmentCompleted);
+                        }else{
+                            $investment->update($dataInvestment);
+                        }
                         \App\Models\InvestmentReturn::create($dataReturns);
 
                         if ($instantCurrentReturn === $numberOfReturn) {
