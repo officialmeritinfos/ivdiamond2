@@ -103,18 +103,18 @@ class InvestmentReturn extends Command
                         $instantCurrentReturn,
                         $numberOfReturn
                     ) {
-                        Log::error("Check if this is the last return " .($instantCurrentReturn === $numberOfReturn));
+                        Log::error("Check if this is the last return " .($instantCurrentReturn == $numberOfReturn));
                         Log::error("Check the current return " . $instantCurrentReturn);
 
 
-                        if ($instantCurrentReturn === $numberOfReturn){
+                        if ($instantCurrentReturn == $numberOfReturn){
                             $investment->update($dataInvestmentCompleted);
                         }else{
                             $investment->update($dataInvestment);
                         }
                         \App\Models\InvestmentReturn::create($dataReturns);
 
-                        if ($instantCurrentReturn === $numberOfReturn) {
+                        if ($instantCurrentReturn == $numberOfReturn) {
                             if ($package->withdrawEnd != 1) {
                                 $user->profit += $profitToAdd;
                             } else {
