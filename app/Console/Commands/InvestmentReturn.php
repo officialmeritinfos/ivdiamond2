@@ -43,103 +43,92 @@ class InvestmentReturn extends Command
      */
     public function handle()
     {
-        $investments = Investment::where('status',4)->where('nextReturn','<=',time())->get();
-        if ($investments->count()>0){
-            foreach ($investments as $investment) {
-                $user = User::where('id',$investment->user)->first();
+        logger('Starting the processes');
+        $investments = Investment::where('status', 4)
+            ->where('nextReturn', '<=', now()->timestamp)
+            ->get();
 
-                $package = Package::where('id',$investment->package)->first();
+        foreach ($investments as $investment) {
+            $user = User::find($investment->user);
+            $package = Package::find($investment->package);
+            $returnTypeModel = ReturnType::find($investment->returnType);
 
+            if (! $user || ! $package || ! $returnTypeModel) {
+                continue;
+            }
 
-                $currentReturn = $investment->currentReturn;
-                $numberOfReturn = $investment->numberOfReturns;
+            $currentReturn = $investment->currentReturn;
+            $numberOfReturn = $investment->numberOfReturns;
+            $currentProfit = $investment->currentProfit;
+            $profitToAdd = $investment->profitPerReturn;
+            $returnType = $returnTypeModel->duration;
 
-                $currentProfit = $investment->currentProfit;
-                $profitToAdd = $investment->profitPerReturn;
+            if ($currentReturn < $numberOfReturn) {
+                $instantCurrentReturn = $currentReturn + 1;
+                $newProfit = $currentProfit + $profitToAdd;
 
-                $returnTypes = ReturnType::where('id',$investment->returnType)->first();
-                $returnType = $returnTypes->duration;
-                //if the expected number of addition is less than the total number of return; we will credit
-                if ($currentReturn < $numberOfReturn){
+                $dataReturns = [
+                    'amount' => $profitToAdd,
+                    'investment' => $investment->id,
+                    'user' => $investment->user,
+                ];
 
-                    $dataReturns = [
-                        'amount'=>$profitToAdd,
-                        'investment'=>$investment->id,
-                        'user'=>$investment->user
-                    ];
+                $dataInvestment = [
+                    'currentProfit' => $newProfit,
+                    'currentReturn' => $instantCurrentReturn,
+                    'nextReturn' => strtotime($returnType, now()->timestamp),
+                ];
 
-                    $instantCurrentReturn = $currentReturn+1;
-                    $newProfit = $currentProfit+$profitToAdd;
-                    $dataInvestment = [
-                        'currentProfit'=> $newProfit,
-                        'currentReturn'=>$instantCurrentReturn,
-                        'nextReturn'=>strtotime($returnType,time()),
-                    ];
+                if ($instantCurrentReturn === $numberOfReturn) {
+                    $dataInvestment['status'] = 1;
+                    $dataInvestment['nextReturn'] = now()->timestamp;
 
-                    if ($instantCurrentReturn == $numberOfReturn){
-                        //since by here it would have returned completely, we will end the cycle
+                    $updated = Investment::where('id', $investment->id)->update($dataInvestment);
 
-                        $dataInvestment['status']=1;
-                        $dataInvestment['nextReturn']=time();
+                    if ($updated) {
+                        if ($package->withdrawEnd != 1) {
+                            $user->profit += $profitToAdd;
+                        } else {
+                            $user->profit += $newProfit;
+                        }
+                        $user->balance += $investment->amount;
+                        $user->save();
 
-                        $update = Investment::where('id',$investment->id)->update($dataInvestment);
-                        if ($update){
-                            if ($package->withdrawEnd!=1){
-                                $user->profit = $user->profit+$profitToAdd;
-                                $user->balance = $user->balance+$investment->amount;
-                            }else{
-                                $user->profit = $user->profit+$newProfit;
-                                $user->balance = $user->balance+$investment->amount;
-                            }
+                        InvestmentReturn::create($dataReturns);
 
+                        $userMessage = "
+                            Your Investment with reference Id <b>{$investment->reference}</b> has completed
+                            and the earned returns added to your profit account.
+                        ";
+                        $user->notify(new InvestmentMail($user, $userMessage, 'Investment Completion'));
+
+                        $admin = User::where('is_admin', 1)->first();
+                        if ($admin) {
+                            $adminMessage = "
+                                An investment started by <b>{$user->name}</b> with reference
+                                <b>{$investment->reference}</b> has completed and returns credited to profit balance.
+                            ";
+                            $admin->notify(new InvestmentMail($admin, $adminMessage, 'Investment Completion'));
+                        }
+                    }
+                } else {
+                    $updated = Investment::where('id', $investment->id)->update($dataInvestment);
+
+                    if ($updated) {
+                        InvestmentReturn::create($dataReturns);
+
+                        if ($package->withdrawEnd != 1) {
+                            $user->profit += $profitToAdd;
                             $user->save();
-
-                            \App\Models\InvestmentReturn::create($dataReturns);
-
-                            //send a mail to investor
-                            $userMessage = "
-                                Your Investment with reference Id is <b>".$investment->reference."</b> has completed
-                                 and the earned returns added to your profit account.
-                            ";
-                            //send mail to user
-                            //SendInvestmentNotification::dispatch()
-                            $user->notify(new InvestmentMail($user,$userMessage,'Investment Completion'));
-                            $admin = User::where('is_admin',1)->first();
-                            //send mail to Admin
-                            if (!empty($admin)){
-                                $adminMessage = "
-                                    An investment started by the investor <b>".$user->name."</b> with reference
-                                    <b>".$investment->reference."</b> has completed and returns credited to profit balance.
-                                ";
-                                //SendInvestmentNotification::dispatch();
-                                $admin->notify(new InvestmentMail($admin,$adminMessage,'Investment completion'));
-                            }
                         }
 
-                    }else{
-
-                        $update = Investment::where('id',$investment->id)->update($dataInvestment);
-                        if ($update){
-                            \App\Models\InvestmentReturn::create($dataReturns);
-                            if ($package->withdrawEnd !=1){
-                                $dataUser = [
-                                    'profit'=>$user->profit+$profitToAdd
-                                ];
-
-                                User::where('id',$user->id)->update($dataUser);
-                            }
-                            //send a mail to investor
-                            $userMessage = "
-                                Your Investment with reference Id is <b>".$investment->reference."</b> has returned
-                                <b>$".$profitToAdd."</b> to your account. <br> You can find this in the specific
-                                investment Current Profit column. <br>
-                                <p>Please Note: <b>All returns will be credited to your profit balance at the end of
-                                the cycle.</b></p>
-                            ";
-                            //send mail to user
-                            //SendInvestmentNotification::dispatch();
-                            $user->notify(new InvestmentMail($user,$userMessage,'Investment Return'));
-                        }
+                        $userMessage = "
+                            Your Investment with reference Id <b>{$investment->reference}</b> has returned
+                            <b>\${$profitToAdd}</b> to your account.<br>
+                            You can find this in the specific investment Current Profit column.<br>
+                            <p><b>Note:</b> All returns will be credited to your profit balance at the end of the cycle.</p>
+                        ";
+                        $user->notify(new InvestmentMail($user, $userMessage, 'Investment Return'));
                     }
                 }
             }
