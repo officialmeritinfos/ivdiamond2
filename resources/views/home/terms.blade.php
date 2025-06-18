@@ -41,7 +41,7 @@
                         <div class="alert alert-info" role="alert">
                             <h5 class="mb-2">Please Note:</h5>
                             <ul class="mb-0">
-                                <li><strong>Reinvestment</strong> on the <strong>Starter Plan</strong> is limited to a maximum of <strong>two (2) times</strong>.</li>
+                                <li> There is a limited number of <strong>Reinvestment</strong> on the <strong>Starter Plan</strong> .</li>
                                 <li><strong>Minimum withdrawal</strong> from the capital balance is <strong>$10,000</strong>.</li>
                                 <li><strong>Maximum withdrawal</strong> is <strong>unlimited</strong>.</li>
                             </ul>
