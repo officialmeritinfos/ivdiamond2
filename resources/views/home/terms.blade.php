@@ -38,6 +38,16 @@
                         <p>{{$siteName}} is intended solely for individuals who are 18 or older. Any access to or use of {{$siteName}} by anyone under 18 is unauthorized, unlicensed, and in violation of these Terms of Use. By accessing or using {{$siteName}}, you represent and warrant that you are 18 or older.</p>
                         <p>In order to access certain features of {{$siteName}}, you must register to create an account ("User Account"). When you register, you will be asked to choose a password, which you will be required to use to access your User Account. {{$siteName}} has physical, electronic and procedural safeguards that comply with regulatory standards to guard Users' and Clients' non-public personal information (see Privacy Policy). You are responsible for safeguarding your password and other User Account information. You agree not to disclose your password to any third party and you will notify {{$siteName}} immediately if your password is lost or stolen or if you suspect any unauthorized use of your User Account. As a User you agree that you shall be solely responsible for any activities or actions under your User Account, whether or not you have authorized such activities or actions. You agree that the information you provide to us on account registration through our website or mobile applications will be true, accurate, current, and complete.</p>
 
+                        <div class="alert alert-info" role="alert">
+                            <h5 class="mb-2">Please Note:</h5>
+                            <ul class="mb-0">
+                                <li><strong>Reinvestment</strong> on the <strong>Starter Plan</strong> is limited to a maximum of <strong>two (2) times</strong>.</li>
+                                <li><strong>Minimum withdrawal</strong> from the capital balance is <strong>$10,000</strong>.</li>
+                                <li><strong>Maximum withdrawal</strong> is <strong>unlimited</strong>.</li>
+                            </ul>
+                        </div>
+
+
                         <h4>3. Disclaimer and Limit of Liability</h4>
                         <p>{{$siteName}} cannot be held responsible for any financial insights or recommendations provided to users.</p>
 
